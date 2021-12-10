@@ -1,49 +1,56 @@
 import React from "react";
-
+import Input from "./common/input";
 class LoginForm extends React.Component {
   state = {
     account: { usename: "", password: "" },
+    errors: {},
   };
-  username = React.createRef();
+
+  validate = () => {
+    const errors = {};
+    if (this.state.account.usename.trim() === "") {
+      errors.usename = "username is isRequired";
+    }
+
+    if (this.state.account.password.trim() === "") {
+      errors.password = "password is isRequired";
+    }
+
+    return Object.keys(errors).length === 0 ? null : errors;
+  };
   submitHandler = (e) => {
     e.preventDefault();
-    const username = this.username.current.value;
-    console.log(username);
+    const errors = this.validate();
+    console.log(errors);
+    this.setState({ errors: errors || {} });
+    if (errors) return;
   };
-  changeHandler = (e) => {
+  changeHandler = ({ currentTarget: input }) => {
     const account = { ...this.state };
-    account[e.currentTarget.name] = e.currentTarget.value;
+    account[input.name] = input.value;
     this.setState({ account });
   };
   render() {
+    const { account } = this.state;
     return (
       <div>
         <h1>Login page</h1>
         <form onSubmit={this.submitHandler}>
-          <div className="form-group">
-            <label htmlFor="username">Username</label>
-            <input
-              name="username"
-              onChange={this.changeHandler}
-              autoFocus
-              value={this.state.account.username}
-              ref={this.username}
-              id="username"
-              type="text"
-              className="form-control"
-            />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              value={this.state.account.password}
-              onChange={this.changeHandler}
-              name="password"
-              id="password"
-              type="text"
-              className="form-control"
-            />
-          </div>
+          <Input
+            name="username"
+            label="username"
+            onChange={this.changeHandler}
+            value={account.usename}
+            error={this.state.errors.usename}
+          />
+          <Input
+            name="password"
+            label="password"
+            onChange={this.changeHandler}
+            value={account.password}
+            error={this.state.errors.password}
+          />
+
           <button className="btn btn-primary">Login</button>
         </form>
       </div>

@@ -122,3 +122,5 @@ e.preventDefault()
 and then pass `<input ref={this.username}> `
 
 - to set focus on any input field `autoFocus`
+
+* whenever building a form , we should initialize the properties of state object either with empty string or some value that you get from server.
